@@ -1,4 +1,4 @@
-module .main.go
+module github.com/neiderproy/recruitment-exercise-golang-oceans
 
 go 1.16
 

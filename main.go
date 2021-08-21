@@ -1,8 +1,6 @@
 package main
 
-import (
-	".main.go/factory"
-)
+import "github.com/neiderproy/recruitment-exercise-golang-oceans/factory"
 
 const carsAmount = 100
 

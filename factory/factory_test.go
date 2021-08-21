@@ -1,9 +1,8 @@
 package factory
 
 import (
-	"testing"
-
 	"github.com/stretchr/testify/suite"
+	"testing"
 )
 
 type factoryUnitTestSuite struct {

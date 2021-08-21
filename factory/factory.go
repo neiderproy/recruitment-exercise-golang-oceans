@@ -2,9 +2,8 @@ package factory
 
 import (
 	"fmt"
-
-	".main.go/assemblyspot"
-	".main.go/vehicle"
+	"github.com/neiderproy/recruitment-exercise-golang-oceans/assemblyspot"
+	"github.com/neiderproy/recruitment-exercise-golang-oceans/vehicle"
 )
 
 const assemblySpots int = 5
@@ -37,7 +36,7 @@ func New() *Factory {
 //(Do not wait for all of them to be assembled to return them all, send each one ready over to main)
 func (f *Factory) StartAssemblingProcess(amountOfVehicles int) {
 	vehicleList := f.generateVehicleLots(amountOfVehicles)
-
+	
 	for _, vehicle := range vehicleList {
 		fmt.Println("Assembling vehicle...")
 

@@ -3,14 +3,15 @@ package assemblyspot
 import (
 	"errors"
 	"fmt"
+	"github.com/neiderproy/recruitment-exercise-golang-oceans/vehicle"
+	"sync"
 	"time"
-
-	".main.go/vehicle"
 )
 
 type AssemblySpot struct {
 	vehicleToAssemble *vehicle.Car
 	assemblyLog       string
+	mtx sync.Mutex
 }
 
 func (s *AssemblySpot) SetVehicle(v *vehicle.Car) {
@@ -26,60 +27,86 @@ func (s *AssemblySpot) GetAssembledLogs() string {
 }
 
 //hint: improve this function to execute this process concurrenlty
-func (s *AssemblySpot) AssembleVehicle() (*vehicle.Car, error) {
+func (s *AssemblySpot) AssembleVehicle(vehicle chan <-*vehicle.Car, errorChanel chan<- error) {
 	if s.vehicleToAssemble == nil {
-		return nil, errors.New("no vehicle set to start assembling")
+		errorChanel <- errors.New("no vehicle set to start assembling")
 	}
 
-	s.assembleChassis()
-	s.assembleTires()
-	s.assembleEngine()
-	s.assembleElectronics()
-	s.assembleDash()
-	s.assembleSeats()
-	s.assembleWindows()
+	wg := sync.WaitGroup{}
+	wg.Add(7)
+	s.assembleChassis(&wg)
+	s.assembleTires(&wg)
+	s.assembleEngine(&wg)
+	s.assembleElectronics(&wg)
+	s.assembleDash(&wg)
+	s.assembleSeats(&wg)
+	s.assembleWindows(&wg)
 
-	return s.vehicleToAssemble, nil
+	wg.Wait()
+
+	vehicle <- s.vehicleToAssemble
 }
 
-func (s *AssemblySpot) assembleChassis() {
+func (s *AssemblySpot) assembleChassis(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Chassis = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Chassis at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleTires() {
+func (s *AssemblySpot) assembleTires(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Tires = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Tires at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleEngine() {
+func (s *AssemblySpot) assembleEngine(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Engine = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Engine at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleElectronics() {
+func (s *AssemblySpot) assembleElectronics(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Electronics = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Electronics at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleDash() {
+func (s *AssemblySpot) assembleDash(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Dash = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Dash at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleSeats() {
+func (s *AssemblySpot) assembleSeats(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Sits = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Sits at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
 
-func (s *AssemblySpot) assembleWindows() {
+func (s *AssemblySpot) assembleWindows(wg *sync.WaitGroup) {
+	s.mtx.Lock()
 	s.vehicleToAssemble.Windows = "Assembled"
 	time.Sleep(1 * time.Second)
 	s.assemblyLog += fmt.Sprintf("Windows at [%s], ", time.Now().Format("2006-01-02 15:04:05.000"))
+	s.mtx.Unlock()
+	wg.Done()
 }
