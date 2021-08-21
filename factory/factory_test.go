@@ -1,6 +1,7 @@
 package factory
 
 import (
+	"errors"
 	"github.com/stretchr/testify/suite"
 	"testing"
 )
@@ -19,8 +20,9 @@ func TestFactoryUnitTestSuite(t *testing.T) {
 	suite.Run(t, &factoryUnitTestSuite{})
 }
 
-func (s *factoryUnitTestSuite) TestSamble() {
-	//code here
-	// Assert
-	s.Assert().Equal(1, 1)
+func (s *factoryUnitTestSuite) TestSambleErrorAmount() {
+	err := make(chan error)
+	s.adapter.StartAssemblingProcess(-1, nil, err,nil)
+	errorExpect := errors.New("not valid amount")
+	s.Assert().Equal(errorExpect, err)
 }

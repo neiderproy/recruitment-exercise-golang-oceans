@@ -32,6 +32,7 @@ func New() *Factory {
 
 	return factory
 }
+
 type LogAssembled struct {
 	VehicleID int
 	LogTest string
@@ -55,7 +56,6 @@ func (f *Factory) StartAssemblingProcess(amountOfVehicles int ,log chan <-*LogAs
 		car:= make(chan *vehicleCar.Car)
 		errorCh  := make(chan error)
 		go idleSpot.AssembleVehicle(car,errorCh)
-
 		select {
 			case vehicle := <- car:
 				vehicle.TestingLog = f.testCar(vehicle)
